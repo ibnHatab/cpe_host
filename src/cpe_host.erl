@@ -1,4 +1,4 @@
-%%% File    : tr69.erl
+%%% File    : cpr_host.erl
 %%% Description :
 %%%   Manual startup of the HOST application
 

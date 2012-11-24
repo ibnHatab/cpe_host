@@ -1,0 +1,66 @@
+
+#+STARTUP: showall hidestars
+
+#+OPTIONS: author:nil creator:nil
+#+OPTIONS: toc:nil
+
+#+TAGS: DOCS(d) CODING(c) TESTING(t) PLANING(p)
+
+#+TITLE: CPE Host
+
+* Overview
+  This module serves as 'host' application for folowing modules:
+  - gproc as globaal registry
+  - lager as logging framework
+  - utils relatest to hosts services
+
+
+* Installation
+  Not needed as cpe_host application test only usage.
+ 
+  Module provides *_internal.hrl includes with logging and
+  tracing macros.
+
+  Module depending on it has to provise its own src/foo_internal.hrl
+
+foo_internal.hrl must include parent internal and redefine trace 
+reporting SYSTEM and short names.
+
+#+BEGIN_SRC shell
+-ifndef(foo_internal_hrl).
+-define(foo_internal_hrl, true).
+-include("cpe_host/src/host_internal.hrl").
+
+-define(SERVICE, foo).
+-define(foori(Label, Content), ?report_important(Label, ?SERVICE, Content)).
+-define(foorv(Label, Content), ?report_verbose(Label,   ?SERVICE, Content)).
+-define(foord(Label, Content), ?report_debug(Label,     ?SERVICE, Content)).
+-define(foort(Label, Content), ?report_trace(Label,     ?SERVICE, Content)).
+
+-endif. % -ifdef(foo_internal_hrl).
+#+END_SRC
+
+Note: _internal.hrl must be guarded from multiple inclussion.
+
+
+* Testing 
+  
+  Unitary tests can be run by:
+#+BEGIN_SRC shell
+  ./rebar -v eunit skip_deps=true
+undefined
+*** test module not found ***
+::ok
+
+#+END_SRC
+
+  If rebar complains that *** test module not found *** test
+  can be run by specifying suite=test_gproc or something.
+
+  Note: Fix exist but I cant remember it now.
+
+* Configuration
+  Modules must be configured elsewhere but configuration snipets can
+  be found in priv directory.
+
+

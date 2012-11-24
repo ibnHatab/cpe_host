@@ -38,7 +38,7 @@
 %% Various trace macros
 
 -define(report(Severity, Label, Service, Content), 
-	host_trace:report_event(Severity, Label, Service, 
+	cpe_trace:report_event(Severity, Label, Service, 
 				[{?MODULE, ?LINE} | [Content]])).
 -define(report_important(Label, Service, Content), 
 	?report(20, Label, Service, Content)).
@@ -50,7 +50,7 @@
 	?report(80, Label, Service, Content)).
 
 -define(message(Severity, From, To, Label, Content), 
-	host_trace:report_event(Severity, From, To, Label, Content)).
+	cpe_trace:report_event(Severity, From, To, Label, Content)).
 
 %% This part should be redefined in user modules
 -define(SERVICE, otp).
@@ -58,7 +58,6 @@
 -define(otprv(Label, Content), ?report_verbose(Label,   ?SERVICE, Content)).
 -define(otprd(Label, Content), ?report_debug(Label,     ?SERVICE, Content)).
 -define(otprt(Label, Content), ?report_trace(Label,     ?SERVICE, Content)).
-
 
 
 -ifndef(TIMEON).

@@ -1,14 +1,13 @@
 %%% @author Gratiela Ghergu <Gratiela.Ghergu@Alcatel-Lucent.com>
 %%% @copyright (C) 2012, Gratiela Ghergu
 %%% @doc
-%%%
+%%%  GPROC tests
 %%% @end
 %%% Created : 13 Nov 2012 by Gratiela Ghergu <Gratiela.Ghergu@Alcatel-Lucent.com>
 
--module(gproc_tests).
+-module(test_gproc).
 
 -include("cpe_host/src/host_internal.hrl").
-
 
 -include_lib("eunit/include/eunit.hrl").
 
@@ -19,7 +18,6 @@ ensure_started(App) ->
         {error, {already_started, App}} ->
             ok
     end.
-
 
 gproc_register_test_() ->
     { setup,

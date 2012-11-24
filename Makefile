@@ -47,7 +47,7 @@ clean:
 	-@rm -rf test/*.beam
 	-@rm -rf .eunit
 	-@rm -rf $(APP)_info
-	-@rm README
+	-@rm README README.txt
 
 distclean: clean
 	$(REBAR) clean delete-deps
