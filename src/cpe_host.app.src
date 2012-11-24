@@ -1,0 +1,12 @@
+{application, cpe_host,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib
+                 ]},
+  {mod, { cpe_host_app, []}},
+  {env, []}
+ ]}.
