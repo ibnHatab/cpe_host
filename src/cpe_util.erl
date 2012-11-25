@@ -35,7 +35,7 @@ sleep(T) ->
 -ifdef(TEST).
 -include_lib("eunit/include/eunit.hrl").
 
-is_arch_test_() ->
+is_arch_test() ->
     ?assert(is_arch (linux)).
 
 -endif.

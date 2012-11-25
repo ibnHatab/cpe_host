@@ -5,13 +5,13 @@
 %%% @end
 %%% Created : 13 Nov 2012 by Gratiela Ghergu <Gratiela.Ghergu@Alcatel-Lucent.com>
 
--module(test_gproc).
+-module(gproc_tests).
 
 -include("cpe_host/src/host_internal.hrl").
 
 -include_lib("eunit/include/eunit.hrl").
 
-ensure_started(App) ->
+ensure_started(App) -> 
     case application:start(App) of
         ok ->
             ok;

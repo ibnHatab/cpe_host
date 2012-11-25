@@ -55,9 +55,9 @@ undefined
 #+END_SRC
 
   If rebar complains that *** test module not found *** test
-  can be run by specifying suite=test_gproc or something.
+  can be run by specifying suite=gproc_tests or something.
 
-  Note: Fix exist but I cant remember it now.
+  Note: Fix exist but I cant remember it now (Fixed: test was broken in utils module)
 
 * Configuration
   Modules must be configured elsewhere but configuration snipets can
