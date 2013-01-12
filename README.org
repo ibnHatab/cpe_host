@@ -6,7 +6,7 @@
 
 #+TAGS: DOCS(d) CODING(c) TESTING(t) PLANING(p)
 
-#+TITLE: CPE Host
+#+TITLE: CPE Host Services
 
 * Overview
   This module serves as 'host' application for folowing modules:
