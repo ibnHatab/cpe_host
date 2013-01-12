@@ -211,28 +211,28 @@ handle_trace({trace_ts, Who, call,
               {?MODULE, report_event,
                [Sev, Service, Service, Label, Content]}, Timestamp},
              Filter) ->
-    (catch print_otp_trace(Filter, Sev, Timestamp, Who, Label, Service, Content)),
+    (catch print_host_trace(Filter, Sev, Timestamp, Who, Label, Service, Content)),
     Filter;
 handle_trace({trace_ts, Who, call,
               {?MODULE, report_event,
                [Sev, From, To, Label, Content]}, Timestamp},
              Filter) ->
-    (catch print_otp_message(Filter, Sev, Timestamp, Who, From, To, Label, Content)),
+    (catch print_host_message(Filter, Sev, Timestamp, Who, From, To, Label, Content)),
     Filter;
 handle_trace(Event, Filter) ->
     (catch print_trace(Event, Filter)),
     Filter.
 
-print_otp_trace(Filter, Sev, Timestamp, Who, Label, Service, Content)
+print_host_trace(Filter, Sev, Timestamp, Who, Label, Service, Content)
   when (Filter =:= all) ->
-    do_print_otp_trace(Sev, Timestamp, Who, Label, Service, Content);
-print_otp_trace(Filter, _Sev, _Timestamp, _Who, _Label, Service, _Content)
+    do_print_host_trace(Sev, Timestamp, Who, Label, Service, Content);
+print_host_trace(Filter, _Sev, _Timestamp, _Who, _Label, Service, _Content)
   when Filter =/= Service ->
     ok;
-print_otp_trace(_Filter, Sev, Timestamp, Who, Label, Service, Content) ->
-    do_print_otp_trace(Sev, Timestamp, Who, Label, Service, Content).
+print_host_trace(_Filter, Sev, Timestamp, Who, Label, Service, Content) ->
+    do_print_host_trace(Sev, Timestamp, Who, Label, Service, Content).
 
-do_print_otp_trace(Sev, Timestamp, Who, Label, Service, Content) ->
+do_print_host_trace(Sev, Timestamp, Who, Label, Service, Content) ->
     Ts = format_timestamp(Timestamp),
     lager:info("[EVT ~p(~p) trace(~p) ~p] ~s"
 	       "~n   Content: ~p"
@@ -240,14 +240,14 @@ do_print_otp_trace(Sev, Timestamp, Who, Label, Service, Content) ->
 	       [Service, Who, Sev, Ts, Label, Content]).
 
 
-print_otp_message(Filter, Sev, Timestamp, Who, From, To, Label, Content)
+print_host_message(Filter, Sev, Timestamp, Who, From, To, Label, Content)
   when (Filter =:= all) ->
-    do_print_otp_message(Sev, Timestamp, Who, From, To, Label, Content);
-print_otp_message(_Filter, Sev, Timestamp, Who, From, To, Label, Content) ->
-    do_print_otp_message(Sev, Timestamp, Who, From, To, Label, Content).
+    do_print_host_message(Sev, Timestamp, Who, From, To, Label, Content);
+print_host_message(_Filter, Sev, Timestamp, Who, From, To, Label, Content) ->
+    do_print_host_message(Sev, Timestamp, Who, From, To, Label, Content).
 
 
-do_print_otp_message(_Sev, Timestamp, Who, From, To, Label, Content) ->
+do_print_host_message(_Sev, Timestamp, Who, From, To, Label, Content) ->
     Ts = format_timestamp(Timestamp),
     lager:info("[MSG ~p(~p):~p -> ~p, ~p]"
 	       "~n   Content: ~p"
@@ -306,11 +306,11 @@ trace_macro_test_() ->
       end,
       [?_test(begin
 		  cpe_trace:enable(max, all),
-		  ?otpri("Important", "Don't forget your glasses"),
-		  ?otprv("Verbose", "You talk too much"),  
-		  ?otprd("Debug", "No bugs allowed"),
-		  ?otprt("Trace", "Catch me if you can"),
-		  ?message(60, otp, httpd, 'ORLY?', "I have it"),
+		  ?hostri("Important", "Don't forget your glasses"),
+		  ?hostrv("Verbose", "You talk too much"),  
+		  ?hostrd("Debug", "No bugs allowed"),
+		  ?hostrt("Trace", "Catch me if you can"),
+		  ?message(60, host, httpd, 'ORLY?', "I have it"),
 		  cpe_trace:disable()
 	      end)]}.
 

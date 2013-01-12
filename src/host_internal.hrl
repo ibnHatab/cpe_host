@@ -54,10 +54,10 @@
 
 %% This part should be redefined in user modules
 -define(SERVICE, otp).
--define(otpri(Label, Content), ?report_important(Label, ?SERVICE, Content)).
--define(otprv(Label, Content), ?report_verbose(Label,   ?SERVICE, Content)).
--define(otprd(Label, Content), ?report_debug(Label,     ?SERVICE, Content)).
--define(otprt(Label, Content), ?report_trace(Label,     ?SERVICE, Content)).
+-define(hostri(Label, Content), ?report_important(Label, ?SERVICE, Content)).
+-define(hostrv(Label, Content), ?report_verbose(Label,   ?SERVICE, Content)).
+-define(hostrd(Label, Content), ?report_debug(Label,     ?SERVICE, Content)).
+-define(hostrt(Label, Content), ?report_trace(Label,     ?SERVICE, Content)).
 
 
 -ifndef(TIMEON).

@@ -59,20 +59,6 @@ report_event_test_() ->
        	      end)
        ,
 
-       %% enable EV
-       %% ?_test(begin
-       %% 		  cpe_trace:start_ev(),
-       %% 		  cpe_trace:enable(max, all),
-
-       %% 		  send_trace(),
-
-       %% 		  cpe_util:sleep(5000),
-       %% 		  cpe_trace::stop_ev(),
-       %% 		  cpe_trace:disable(),
-       %% 		  ok
-       %% 	      end)
-       %% ,
-
        %% enable per module
        ?_test(begin
        		  cpe_trace:enable(max, cwmp_cli),
@@ -92,19 +78,6 @@ report_event_test_() ->
       ]
 
     }.
-
-%% send_trace() ->
-%%     Events = [
-%% 	      % cwmp_cli, cpe_rpc, cpe_rpc_session, cpe_http, cpe_rpc_session, ibrowse
-%% 	      {cwmp_cli,cpe_rpc,open},
-%% 	      {cpe_rpc, cpe_http, open},
-%% 	      {cpe_http,ibrowse,start},
-%% 	      {cpe_http,cpe_rpc_session,new},
-%% 	      {cpe_rpc,cpe_rpc_session,new},
-%% 	      {cwmp_cli,cpe_rpc_session,push}
-%% 	     ],
-%%     [cpe_trace:report_event(60, F, T, L, [F, T, L])
-%%      || {F,T,L} <- Events].
 
 
 unprotocol_test_() ->
