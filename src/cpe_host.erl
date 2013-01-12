@@ -32,9 +32,8 @@ start() ->
 %% @spec stop() -> ok
 %% @doc Stop the acs_core server.
 stop() ->
-    Res = application:stop(cpe_host),
-    application:stop(gproc),
-    application:stop(lager),
-    application:stop(sasl),
-    Res.
+    ok = application:stop(cpe_host),
+    ok = application:stop(gproc),
+    ok = application:stop(lager),
+    ok = application:stop(sasl).
 

@@ -72,7 +72,7 @@ enable(Level) ->
     enable(Level, all).
 
 enable(Level, Service) ->
-    lager:info("start trace at ~s~n", [format_timestamp(now())]),
+    ok = lager:info("start trace at ~s~n", [format_timestamp(now())]),
     Levels = lager:get_loglevels(),
     MaxLogLevel = lists:max(Levels),
     ?EXPECT(MaxLogLevel =:= 6 orelse MaxLogLevel =:= 7,
@@ -81,7 +81,7 @@ enable(Level, Service) ->
     HandleSpec = {fun handle_trace/2, Service},
     case dbg:tracer(process, HandleSpec) of
 	{ok, _} ->
-	    set_level(Level),
+	    {ok, _} = set_level(Level),
 	    ok;
 	Error ->
 	    Error
@@ -141,17 +141,17 @@ change_pattern({Mod, Service, Pattern})
     case Pattern of
         [] ->
 	    try
-		error_to_exit(ctp, dbg:ctp(MFA)),
-		error_to_exit(p,   dbg:p(all, clear))
+		{ok,_} = error_to_exit(ctp, dbg:ctp(MFA)),
+		{ok,_} = error_to_exit(p,   dbg:p(all, clear))
 	    catch
 		exit:{Where, Reason} ->
 		    {error, {Where, Reason}}
 	    end;
         List when is_list(List) ->
 	    try
-		error_to_exit(ctp, dbg:ctp(MFA)),
-		error_to_exit(tp,  dbg:tp(MFA, Pattern)),
-		error_to_exit(p,   dbg:p(all, [call, timestamp]))
+		{ok,_} = error_to_exit(ctp, dbg:ctp(MFA)),
+		{ok,_} = error_to_exit(tp,  dbg:tp(MFA, Pattern)),
+		{ok,_} = error_to_exit(p,   dbg:p(all, [call, timestamp]))
 	    catch
 		exit:{Where, Reason} ->
 		    {error, {Where, Reason}}

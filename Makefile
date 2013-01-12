@@ -74,7 +74,7 @@ ct-shell:
 
 
 test: app
-	$(REBAR) -v ct skip_deps=true suites=hdm_trace case=hdm_trace_test_case
+	$(REBAR) -v eunit skip_deps=true 
 
 dialyzer-build:
 	dialyzer --build_plt --verbose			\
