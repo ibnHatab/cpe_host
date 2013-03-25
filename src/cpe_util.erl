@@ -80,9 +80,9 @@ is_arch_test() ->
 validate_options_null_test() ->
     Option = {op1, "value1"},
     Option2 = {op2, "value2"},
-    ValidTemplate = {op1, fun(Any) -> true end, false, default},
-    InvalidTemplate = {op1, fun(Any) -> false end, false, default},
-    MandatoryTemplate = {op1, fun(Any) -> true end, true, missing},
+    ValidTemplate = {op1, fun(_Any) -> true end, false, default},
+    InvalidTemplate = {op1, fun(_Any) -> false end, false, default},
+    MandatoryTemplate = {op1, fun(_Any) -> true end, true, missing},
 
     %% Emmty option list
     ?assertMatch([], validate_options([], [])),
