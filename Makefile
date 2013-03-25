@@ -31,9 +31,9 @@ orgs: orgs-doc orgs-README
 
 orgs-doc: $(DOCDIR)
 	@emacs -l orgbatch.el -batch --eval="(riak-export-doc-dir \"doc\" 'html)"
-	@cp  doc/*.html $(DOCDIR)
+	-@cp  doc/*.html $(DOCDIR)
 	-@mkdir $(DOCDIR)/images
-	@cp  doc/images/*.png $(DOCDIR)/images
+	-@cp  doc/images/*.png $(DOCDIR)/images
 
 orgs-README:
 	@emacs -l orgbatch.el -batch --eval="(riak-export-doc-file \"README.org\" 'ascii)"
@@ -54,27 +54,11 @@ distclean: clean
 
 # unitary tests
 utest:
-	$(REBAR) -v eunit skip_deps=true 
-#suite=cwmp_builder
+	$(REBAR) -v eunit skip_deps=true #suite=cpe_util
 
 ut-shell:
 	exec erl -pa $(PWD)/apps/*/ebin -pa $(PWD)/deps/*/ebin -pa $(PWD)/.eunit -boot start_sasl -s reloader 
 
-
-# common tests
-test.spec: test.spec.in
-	cat test.spec.in | sed -e "s,@PATH@,$(PWD)," > $(PWD)/test.spec
-
-ctest:  test.spec compile
-	-@mkdir logs
-	ct_run -pa $(PWD)/lib/*/ebin -pz ./ebin -spec test.spec
-
-ct-shell:
-	ct_run -shell -pa $(PWD)/deps/*/ebin -pz ./ebin -pz ./test -spec test.spec
-
-
-test: app
-	$(REBAR) -v eunit skip_deps=true 
 
 dialyzer-build:
 	dialyzer --build_plt --verbose			\

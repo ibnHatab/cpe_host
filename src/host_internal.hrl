@@ -1,6 +1,9 @@
-%%%-----------------------------------------------------------------------------
-%%% Use is subject to License terms.
-%%%-----------------------------------------------------------------------------
+%%% @author vlad <lib.aca55a@gmail.com>
+%%% @copyright (C) 2012, vlad
+%%% @doc
+%%%  Wrapers for the system services
+%%% @end
+%%% Created : 11 Nov 2012 by vlad <lib.aca55a@gmail.com>
 
 -ifndef(host_hrl).
 -define(host_hrl, true).
@@ -39,7 +42,7 @@
 
 -define(report(Severity, Label, Service, Content), 
 	cpe_trace:report_event(Severity, Label, Service, 
-				[{?MODULE, ?LINE} | [Content]])).
+			       [{?MODULE, ?LINE} | [Content]])).
 -define(report_important(Label, Service, Content), 
 	?report(20, Label, Service, Content)).
 -define(report_verbose(Label, Service, Content),   

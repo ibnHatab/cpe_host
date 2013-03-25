@@ -6,7 +6,7 @@
 
 -include("host_internal.hrl").
 
--export([is_arch/1, sleep/1]).
+-export([is_arch/1, sleep/1, validate_options/2]).
 
 
 %% Returns a forced-lowercase architecture for this node
@@ -27,6 +27,45 @@ sleep(T) ->
     ?DBG({sleep, T}),
     receive after T -> ok end.
 
+%% This function extracts and validates the connect options from opption list.
+-spec validate_options(list(Option),  list(Validator)) -> list(Option) when
+      Option    :: {Key :: atom(),
+		    Valie :: term()},
+      Validator :: {Key :: atom(),
+		    Validate :: fun((term()) -> true | false),
+		    Mandatory :: true | false,
+		    Default :: term()}.
+validate_options(Options, ValidOptions) ->
+    
+    %% Validate in Options against validation template
+    CheckedUpOptions =
+	lists:foldl(fun({Key, Value}, AccOption) ->
+			    case lists:keysearch(Key, 1, ValidOptions) of
+				{value, {Key, Validate, _, Default}} ->
+				    case (catch Validate(Value)) of
+					true ->
+					    [{Key, Value} | AccOption];
+					_ ->
+					    ?hostrt("validate_options -> check - reject",
+						    [{default, Default}]),
+					    throw({error, {Key, Value}})
+				    end;
+				false ->
+				    ?hostrt("validate_options -> unknown - ignore",
+					    [{key, Key}]),
+				    AccOption
+			    end
+		    end, [], Options),
+    %% Check if any mandatory options are missing! (Throw reason) 
+    [case lists:keysearch(Key, 1, CheckedUpOptions) of
+	 {value, _} -> ok;
+	 _ ->
+	     ?hostrt("validate_options -> missing - mandatory",
+		     [{key, Key}]),	     
+	     throw({error, Reason})
+     end || {Key, _, true, Reason} <- ValidOptions],
+    
+    CheckedUpOptions.
 
 
 %% ===================================================================
@@ -37,5 +76,29 @@ sleep(T) ->
 
 is_arch_test() ->
     ?assert(is_arch (linux)).
+
+validate_options_null_test() ->
+    Option = {op1, "value1"},
+    Option2 = {op2, "value2"},
+    ValidTemplate = {op1, fun(Any) -> true end, false, default},
+    InvalidTemplate = {op1, fun(Any) -> false end, false, default},
+    MandatoryTemplate = {op1, fun(Any) -> true end, true, missing},
+
+    %% Emmty option list
+    ?assertMatch([], validate_options([], [])),
+    ?assertMatch([], validate_options([], [ValidTemplate])),
+    ?assertMatch([], validate_options([], [InvalidTemplate])),
+    ?assertException(throw, {error, missing}, validate_options([], [MandatoryTemplate])),
+
+    
+    ?assertMatch([Option], validate_options([Option], [ValidTemplate])),
+    ?assertMatch([], validate_options([Option2], [InvalidTemplate, ValidTemplate])),
+    
+    ?assertException(throw, {error,{op1,"value1"}},
+    		     validate_options([Option2, Option, {op3, ""}], [InvalidTemplate])),
+    
+    ?assertException(throw, {error, missing},
+     		     validate_options([Option2], [MandatoryTemplate])),    
+    ok.
 
 -endif.
