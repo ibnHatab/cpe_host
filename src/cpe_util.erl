@@ -64,8 +64,12 @@ validate_options(Options, ValidOptions) ->
 		     [{key, Key}]),	     
 	     throw({error, Reason})
      end || {Key, _, true, Reason} <- ValidOptions],
-    
-    CheckedUpOptions.
+
+    %% Adding default options
+    [case lists:keysearch(Key, 1, CheckedUpOptions) of
+	 {value, KeyValue} -> KeyValue;
+	 false -> {Key, Default}			      
+     end || {Key, _, false, Default} <- ValidOptions].
 
 
 %% ===================================================================
@@ -80,19 +84,21 @@ is_arch_test() ->
 validate_options_null_test() ->
     Option = {op1, "value1"},
     Option2 = {op2, "value2"},
+    Option3 = {op3, "value3"},
     ValidTemplate = {op1, fun(_Any) -> true end, false, default},
     InvalidTemplate = {op1, fun(_Any) -> false end, false, default},
     MandatoryTemplate = {op1, fun(_Any) -> true end, true, missing},
 
     %% Emmty option list
     ?assertMatch([], validate_options([], [])),
-    ?assertMatch([], validate_options([], [ValidTemplate])),
-    ?assertMatch([], validate_options([], [InvalidTemplate])),
+    ?assertMatch([{op1,default}], validate_options([], [ValidTemplate])),
+    ?assertMatch([{op1,default}], validate_options([], [InvalidTemplate])),
     ?assertException(throw, {error, missing}, validate_options([], [MandatoryTemplate])),
 
     
     ?assertMatch([Option], validate_options([Option], [ValidTemplate])),
-    ?assertMatch([], validate_options([Option2], [InvalidTemplate, ValidTemplate])),
+    ?assertMatch([{op1,default},{op1,default}],
+		 validate_options([Option3], [InvalidTemplate, ValidTemplate])),
     
     ?assertException(throw, {error,{op1,"value1"}},
     		     validate_options([Option2, Option, {op3, ""}], [InvalidTemplate])),
