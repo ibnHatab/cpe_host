@@ -36,7 +36,7 @@ sleep(T) ->
 		    Mandatory :: true | false,
 		    Default :: term()}.
 validate_options(Options, ValidOptions) ->
-    
+
     %% Validate in Options against validation template
     CheckedUpOptions =
 	lists:foldl(fun({Key, Value}, AccOption) ->
@@ -56,20 +56,25 @@ validate_options(Options, ValidOptions) ->
 				    AccOption
 			    end
 		    end, [], Options),
-    %% Check if any mandatory options are missing! (Throw reason) 
+
+    %% Check if any mandatory options are missing! (Throw reason)
     [case lists:keysearch(Key, 1, CheckedUpOptions) of
 	 {value, _} -> ok;
 	 _ ->
 	     ?hostrt("validate_options -> missing - mandatory",
-		     [{key, Key}]),	     
+		     [{key, Key}]),
 	     throw({error, Reason})
      end || {Key, _, true, Reason} <- ValidOptions],
 
     %% Adding default options
-    [case lists:keysearch(Key, 1, CheckedUpOptions) of
-	 {value, KeyValue} -> KeyValue;
-	 false -> {Key, Default}			      
-     end || {Key, _, false, Default} <- ValidOptions].
+    MissingWithDefault = [case lists:keysearch(Key, 1, CheckedUpOptions) of
+			      {value, _} ->
+				  [];
+			      false ->
+				  {Key, Default}
+			  end || {Key, _, false, Default} <- ValidOptions],
+    
+    CheckedUpOptions ++ lists:flatten(MissingWithDefault).
 
 
 %% ===================================================================
@@ -95,16 +100,28 @@ validate_options_null_test() ->
     ?assertMatch([{op1,default}], validate_options([], [InvalidTemplate])),
     ?assertException(throw, {error, missing}, validate_options([], [MandatoryTemplate])),
 
-    
+
     ?assertMatch([Option], validate_options([Option], [ValidTemplate])),
     ?assertMatch([{op1,default},{op1,default}],
 		 validate_options([Option3], [InvalidTemplate, ValidTemplate])),
-    
+
     ?assertException(throw, {error,{op1,"value1"}},
     		     validate_options([Option2, Option, {op3, ""}], [InvalidTemplate])),
-    
+
     ?assertException(throw, {error, missing},
-     		     validate_options([Option2], [MandatoryTemplate])),    
+     		     validate_options([Option2], [MandatoryTemplate])),
     ok.
 
+
+validate_options_test() ->
+    Option1 = {op1, "value1"},
+    Option2 = {op2, "value2"},
+    Option3 = {op3, "value3"},
+    ValidOption = [{op1, fun(_Any) -> true end, false, default},
+		   {op2, fun(_Any) -> true end, false, default},
+		   {op3, fun(_Any) -> true end, true, missing}],
+
+    ?assertMatch([Option3, {op1,default},{op2,default}], validate_options([Option3],ValidOption)),  
+    ok.
+    
 -endif.
