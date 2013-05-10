@@ -74,9 +74,9 @@ enable(Level) ->
 enable(Level, Service) ->
     ok = lager:info("start trace at ~s~n", [format_timestamp(now())]),
     Levels = lager:get_loglevels(),
-    MaxLogLevel = lists:max(Levels),
-    ?EXPECT(MaxLogLevel =:= 6 orelse MaxLogLevel =:= 7,
-	    "Some of Lager handlers should be in 'debug', 'info'"),
+    %% MaxLogLevel = lists:max(Levels),
+    %% ?EXPECT(MaxLogLevel =:= 6 orelse MaxLogLevel =:= 7,
+    %% 	    "Some of Lager handlers should be in 'debug', 'info'"),
 
     HandleSpec = {fun handle_trace/2, Service},
     case dbg:tracer(process, HandleSpec) of
